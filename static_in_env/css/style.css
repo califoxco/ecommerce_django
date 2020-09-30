@@ -10,6 +10,10 @@ h5{
     padding-bottom:15%;
 }
 
+.content-container{
+    margin-left: 10%;
+    margin-right: 10%;
+}
 
 
 nav {
@@ -112,6 +116,8 @@ img {
 body {
     font-family: Oranienbaum;
     padding-top: 4.5rem;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 
