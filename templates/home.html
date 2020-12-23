@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{messages.tag}}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 {% block content %}
 
 <!-- headline animation !-->
