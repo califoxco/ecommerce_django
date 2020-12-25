@@ -118,3 +118,9 @@ MEDIA_ROOT = os.path.join(VENV_PATH, 'media_root')
 
 # setting crispy form's css
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# setting login - profile path
+LOGIN_REDIRECT_URL = 'core:home'
+
+# setting logout path
+LOGOUT_REDIRECT_URL = 'core:home'
