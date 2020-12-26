@@ -15,7 +15,7 @@
 
 
             <div class="blog-post">
-                <img src="{% static 'image/r1.jpg' %}" alt="ring 1">
+                <img src="{{ item.item_picture.url }}" alt="{{ item.title }}">
             </div><!-- /.blog-post -->
 
 
@@ -24,9 +24,7 @@
         <aside class="col-md-4 blog-sidebar">
             <div class="p-4 mb-3 bg-light rounded">
                 <h4 class="font-italic"> {{ item.title }}</h4>
-                <p class="mb-0"> Here is a bunch of product description that
-                keeps talking about how great and how awesome the product is please
-                buy buy buy</p>
+                <p class="mb-0"> {{ item.description }}</p>
             </div>
 
             <div class="p-4">

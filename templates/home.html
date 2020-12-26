@@ -42,7 +42,7 @@
         <div class="my-1 py-1">
             <div class="item-listing">
                 <div class="listing-children">
-                    <img src="{% static 'image/r1.jpg' %}" alt="ring 1">
+                    <img src="{{ item.item_picture.url }}" alt="{{ item.title }}">
                 </div>
                 <div class="listing-children">
                     <p class="item-description"> {{ item.title }} </p>

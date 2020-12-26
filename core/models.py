@@ -7,6 +7,8 @@ class Item(models.Model):
     price = models.FloatField()
     slug = models.SlugField(default='1')
     listed_date = models.DateTimeField(auto_now_add=True)
+    item_picture = models.ImageField(default='default.jpg', upload_to='item_pics')
+    description =  models.CharField(max_length= 500, default="Here is a bunch of product description that keeps talking about how great and how awesome the product is please buy buy buy")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
