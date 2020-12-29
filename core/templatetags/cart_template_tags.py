@@ -5,6 +5,7 @@ register = template.Library()
 
 @register.filter()
 def cart_item_count(user):
+    total_qty = 0
     if user.is_authenticated:
         qs = Order.objects.filter(user=user, ordered=False)
         total_qty = 0
