@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from .models import Item, OrderItem, Order
 from django.utils import timezone
 
@@ -24,6 +24,11 @@ class HomeView(ListView):
 class ItemDetailView(DetailView):
     model = Item
     # template_name = "item_detail.html"
+
+class OrderSummaryView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'core/order_summary.html')
+
 
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)

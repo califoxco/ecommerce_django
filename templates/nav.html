@@ -1,3 +1,4 @@
+{% load cart_template_tags %}
 
 <nav class="navbar navbar-expand-md navbar-white fixed-top d-flex flex-row my-flex-container-brand justify-content-between">
     <div class="p-2 flex-even"></div>
@@ -12,7 +13,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link effect-underline" href="#" >SHOPPING BAG(0)</a>
+                    <a class="nav-link effect-underline" href="#" >SHOPPING BAG({{ request.user|cart_item_count }})</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link effect-underline" href="{% url 'login'%}">LOGIN</a>

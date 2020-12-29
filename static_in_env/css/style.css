@@ -153,6 +153,13 @@ a.effect-underline:hover:after {
 	transform: scale(1);
 }
 
+.my_nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+}
+
 a:hover {
   color: black;
   text-decoration: none;
