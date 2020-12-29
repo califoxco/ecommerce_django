@@ -3,7 +3,7 @@
 
 {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-{{messages.tag}}">
+        <div class="alert .h-100 alert-{{messages.tag}}">
             {{ message }}
         </div>
     {% endfor %}
@@ -55,7 +55,7 @@
 
     {% endfor %}
 </div>
-
+<div class="d-flex flex-row flex-wrap content-container home-content-padding"></div>
 
 <script src="{% static 'js/animation.js' %}"></script>
 

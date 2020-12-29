@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, View
+from django.core.exceptions import ObjectDoesNotExist
 from .models import Item, OrderItem, Order
 from django.utils import timezone
+from django.contrib import messages
 
 """
     The code below is already implemented automatically by django
@@ -27,7 +29,16 @@ class ItemDetailView(DetailView):
 
 class OrderSummaryView(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'core/order_summary.html')
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        if order:
+            context = {
+                'object': order
+            }
+            print(order.first().quantity)
+            return render(self.request, 'core/order_summary.html', context)
+        else:
+            messages.error(self.request, "You do have an active order")
+            return render(self.request, 'core/order_summary.html')
 
 
 def add_to_cart(request, slug):

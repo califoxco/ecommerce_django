@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -10,43 +11,43 @@
 {% endif %}
 {% block content %}
 
-
 <!-- item content row 1!-->
-
 <div class="d-flex flex-row flex-wrap content-container">
+    <h1>Order Summary</h1>
     <table class="table table-striped">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
+            <th scope="col">#</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
         </tr>
       </thead>
       <tbody>
+        {% for order_item in object %}
         <tr>
           <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
+            <td>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <img  width="100" height="100" src="{{ order_item.item.item_picture.url }}"/>
+                        </div>
+                        <div class="col-sm">
+                            <p>{{ order_item.item.title }}</p>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>{{ order_item.item.price }}</td>
+            <td>{{ order_item.quantity }}</td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-          <td>the Bird</td>
-          <td>@twitter</td>
-        </tr>
+        {% endfor %}
+
       </tbody>
     </table>
 </div>
 
 
 <script src="{% static 'js/animation.js' %}"></script>
-
 {% endblock content %}
