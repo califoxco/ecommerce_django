@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d84ea521b1bc3dac157780b151f1e63f7a9cda11804547b377277ec080ee69e9"
+            "sha256": "8a8fc5ae3d1abdd9f2fa9841a3bc063126d59525895ddafe73ac3497876597ec"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -39,6 +39,14 @@
             ],
             "index": "pypi",
             "version": "==1.10.0"
+        },
+        "django-lazysignup": {
+            "hashes": [
+                "sha256:7a10c53d7a624254baec9366c94c1787a0e72411106a3f2ac714638b39e3b67c",
+                "sha256:c68a4935b5bc57a97c4c368cae880434c7a339ed125961d56a7cdb4623502ea2"
+            ],
+            "index": "pypi",
+            "version": "==2.0.0"
         },
         "pillow": {
             "hashes": [
@@ -81,6 +89,14 @@
             ],
             "index": "pypi",
             "version": "==2020.1"
+        },
+        "six": {
+            "hashes": [
+                "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259",
+                "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==1.15.0"
         },
         "sqlparse": {
             "hashes": [

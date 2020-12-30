@@ -7,6 +7,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from lazysignup.decorators import allow_lazy_user
+
+
 """
     The code below is already implemented automatically by django
 """
@@ -48,7 +51,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return render(self.request, 'core/order_summary.html')
 
 
-@login_required
+@allow_lazy_user
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
