@@ -38,6 +38,7 @@ class ItemDetailView(DetailView):
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
+
     def get(self, *args, **kwargs):
         order = OrderItem.objects.filter(user=self.request.user, ordered=False)
         if order:
