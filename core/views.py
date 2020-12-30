@@ -4,10 +4,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Item, OrderItem, Order
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 """
     The code below is already implemented automatically by django
 """
+
+
 # def item_detail(request):
 #     context = {
 #         'items': Item.objects.all()
@@ -17,17 +21,20 @@ from django.contrib import messages
 def checkout(request):
     return render(request, 'checkout.html', {})
 
+
 class HomeView(ListView):
     model = Item
     template_name = "home.html"
     # setting ordering to newest to oldest
     ordering = ['-listed_date']
 
+
 class ItemDetailView(DetailView):
     model = Item
     # template_name = "item_detail.html"
 
-class OrderSummaryView(View):
+
+class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         order = OrderItem.objects.filter(user=self.request.user, ordered=False)
         if order:
@@ -41,6 +48,7 @@ class OrderSummaryView(View):
             return render(self.request, 'core/order_summary.html')
 
 
+@login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
@@ -60,6 +68,6 @@ def add_to_cart(request, slug):
             order.items.add(order_item)
     else:
         ordered_date = timezone.now()
-        order = Order.objects.create(user=request.user, ordered_date = ordered_date)
+        order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
     return redirect("core:item-detail", slug=slug)
