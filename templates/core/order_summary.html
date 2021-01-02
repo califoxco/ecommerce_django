@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -53,7 +52,7 @@
 
     <div class="container d-flex justify-content-end">
         <div class="p-2">
-            <button type="button" class="btn btn-outline-dark"> Check Out </button>
+            <button type="button" class="btn btn-outline-dark"><a href="{% url 'core:checkout' %}"> Check Out </a></button>
         </div>
     </div>
 </div>

@@ -75,3 +75,26 @@ def add_to_cart(request, slug):
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
     return redirect("core:item-detail", slug=slug)
+
+class CheckoutView(LoginRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        order_total = self.get_order_total(self)
+        if order:
+            context = {
+                'object': order,
+                'order_total': order_total,
+            }
+            return render(self.request, 'core/checkout.html', context)
+        else:
+            messages.error(self.request, "You do have an active order")
+            return render(self.request, 'core/order_summary.html')
+
+    def get_order_total(self,*args, **kwargs):
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        order_total = 0
+        print(order)
+        for order_items in order:
+            order_total += order_items.item.price * order_items.quantity
+        return order_total

@@ -1,53 +1,15 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'base.html' %}
+{% load static %}
+{% load cart_template_tags %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Oranienbaum">
-    <title>JS Jewelry</title>
-    <link href="style.css" rel="stylesheet">
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-</head>
-
-
-<body>
-<nav class="navbar navbar-expand-md navbar-white fixed-top d-flex flex-row my-flex-container-brand justify-content-between">
-    <div class="p-2 flex-even"></div>
-    <div class="p-2 flex-even">
-        <a class="navbar-brand" href="#">JSJ</a>
-    </div>
-    <div class="p-2 flex-even">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">NECKLACES<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">RING</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">SHOPPING BAG(0)</a>
-                </li>
-            </ul>
-
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert .h-100 alert-{{messages.tag}}">
+            {{ message }}
         </div>
-    </div>
-</nav>
+    {% endfor %}
+{% endif %}
+{% block content %}
 
 
 <!-- headline animation !-->
@@ -65,34 +27,22 @@
     <div class="col-md-4 order-md-2 mb-4">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
         <span class="text-muted">Your cart</span>
-        <span class="badge badge-primary badge-pill">3</span>
+        <span class="badge badge-primary badge-pill">{{ request.user|cart_item_count }}</span>
       </h4>
       <ul class="list-group mb-3">
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">Product name</h6>
-            <small class="text-muted">Brief description</small>
-          </div>
-          <span class="text-muted money">$12</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">Second product</h6>
-            <small class="text-muted">Brief description</small>
-          </div>
-          <span class="text-muted money">$8</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">Third item</h6>
-            <small class="text-muted">Brief description</small>
-          </div>
-          <span class="text-muted money">$5</span>
-        </li>
+          {% for order_item in object %}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">{{order_item.item.title}}</h6>
+                <small class="text-muted">Qty: {{order_item.quantity}}</small>
+              </div>
+              <span class="text-muted money">$ {{order_item.item.price}}</span>
+            </li>
+          {% endfor %}
 
         <li class="list-group-item d-flex justify-content-between">
           <span>Total (USD)</span>
-          <strong class="money">$20</strong>
+          <strong class="money">${{order_total}}</strong>
         </li>
       </ul>
     </div>
@@ -214,7 +164,7 @@
         <div class="row">
           <div class="col-md-3 mb-3">
             <label for="cc-expiration">Expiration</label>
-            <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+            <input type="text" class="form-control" id="cc-expiration" placeholder="MMYY" required>
             <div class="invalid-feedback">
               Expiration date required
             </div>
@@ -237,10 +187,6 @@
     <p class="mb-1">&copy; 2019-2020 JS Jewelry</p>
   </footer>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
-<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
-<script src="form-validation.js"></script>
 
 <!-- footline !-->
 <div class="footer-line"></div>
@@ -262,6 +208,4 @@
     </div>
 </footer>
 
-<script src="./animation.js"></script>
-</body>
-</html>
+{% endblock content %}
