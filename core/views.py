@@ -1,10 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, View
-from django.core.exceptions import ObjectDoesNotExist
 from .models import Item, OrderItem, Order
 from django.utils import timezone
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CheckoutForm
 
@@ -78,14 +76,47 @@ class CheckoutView(LoginRequiredMixin, View):
 
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
-        context = {
-            'form': form
-        }
-        print(self.request.POST)
-        if form.is_valid():
-            print("the form is valid")
-            return redirect('core:checkout')
-        return render(self.request, 'core/checkout.html', context)
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        order_total = self.get_order_total(self)
+        if order:
+            context = {
+                'object': order,
+                'order_total': order_total,
+                'form': form,
+            }
+            print(self.request.POST)
+            if form.is_valid():
+                print("the form is valid")
+                first_name = form.cleaned_data.get('first_name')
+                last_name = form.cleaned_data.get('last_name')
+                email = form.cleaned_data.get('email')
+                phone_number = form.cleaned_data.get('phone_number')
+                address_1 = form.cleaned_data.get('address_1')
+                address_2 = form.cleaned_data.get('address_2')
+                country = form.cleaned_data.get('country')
+                state = form.cleaned_data.get('state')
+                zip = form.cleaned_data.get('zip')
+
+                sale_order = Order.objects.filter(user=self.request.user, ordered=False)
+                sale_order.update(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    phone_number=phone_number,
+                    address_1=address_1,
+                    address_2=address_2,
+                    country=country,
+                    state=state,
+                    zip=zip,
+                )
+                return redirect('core:checkout')
+
+            return render(self.request, 'core/checkout.html', context)
+
+        else:
+            messages.error(self.request, "You do have an active order")
+            return render(self.request, 'core/order_summary.html')
+
 
 @allow_lazy_user
 def add_to_cart(request, slug):
@@ -110,4 +141,3 @@ def add_to_cart(request, slug):
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
     return redirect("core:item-detail", slug=slug)
-

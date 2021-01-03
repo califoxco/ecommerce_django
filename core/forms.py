@@ -28,7 +28,7 @@ class CheckoutForm(forms.Form):
         'id': 'address',
         'placeholder': '123 Main St',
     }))
-    address_2 = forms.CharField(max_length=200, widget=forms.TextInput(attrs={
+    address_2 = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'id': 'address2',
         'placeholder': 'Apartment or suite',
