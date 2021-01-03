@@ -108,6 +108,7 @@ class CheckoutView(LoginRequiredMixin, View):
                     country=country,
                     state=state,
                     zip=zip,
+                    order_total=order_total,
                 )
                 return redirect('core:checkout')
 

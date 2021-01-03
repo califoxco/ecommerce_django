@@ -56,6 +56,7 @@ class Order(models.Model):
     country = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     zip = models.CharField(max_length=100)
+    order_total = models.FloatField(default=0)
 
     def __str__(self):
         return self.user.username
