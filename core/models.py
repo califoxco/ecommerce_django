@@ -46,6 +46,17 @@ class Order(models.Model):
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
 
+    # Billing Address
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=100)
+    address_1 = models.CharField(max_length=200)
+    address_2 = models.CharField(max_length=200)
+    country = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip = models.CharField(max_length=100)
+
     def __str__(self):
         return self.user.username
 

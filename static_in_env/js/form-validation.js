@@ -1,5 +1,5 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
-(function () {
+
   'use strict'
 
   window.addEventListener('load', function () {
@@ -13,8 +13,13 @@
           event.preventDefault()
           event.stopPropagation()
         }
+        else{
+            var xhttp = XMLHttpRequest();
+            xhttp.open("POST", {% url 'core:accept-checkout'%}, false);
+            xhttp.send();
+        }
         form.classList.add('was-validated')
       }, false)
     })
   }, false)
-}())
+

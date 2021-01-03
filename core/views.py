@@ -6,9 +6,9 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import CheckoutForm
 
 from lazysignup.decorators import allow_lazy_user
-
 
 """
     The code below is already implemented automatically by django
@@ -52,6 +52,41 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return render(self.request, 'core/order_summary.html')
 
 
+class CheckoutView(LoginRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        order_total = self.get_order_total(self)
+        form = CheckoutForm()
+        if order:
+            context = {
+                'object': order,
+                'order_total': order_total,
+                'form': form,
+            }
+            return render(self.request, 'core/checkout.html', context)
+        else:
+            messages.error(self.request, "You do have an active order")
+            return render(self.request, 'core/order_summary.html')
+
+    def get_order_total(self, *args, **kwargs):
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        order_total = 0
+        for order_items in order:
+            order_total += order_items.item.price * order_items.quantity
+        return order_total
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        context = {
+            'form': form
+        }
+        print(self.request.POST)
+        if form.is_valid():
+            print("the form is valid")
+            return redirect('core:checkout')
+        return render(self.request, 'core/checkout.html', context)
+
 @allow_lazy_user
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -76,25 +111,3 @@ def add_to_cart(request, slug):
         order.items.add(order_item)
     return redirect("core:item-detail", slug=slug)
 
-class CheckoutView(LoginRequiredMixin, View):
-
-    def get(self, *args, **kwargs):
-        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
-        order_total = self.get_order_total(self)
-        if order:
-            context = {
-                'object': order,
-                'order_total': order_total,
-            }
-            return render(self.request, 'core/checkout.html', context)
-        else:
-            messages.error(self.request, "You do have an active order")
-            return render(self.request, 'core/order_summary.html')
-
-    def get_order_total(self,*args, **kwargs):
-        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
-        order_total = 0
-        print(order)
-        for order_items in order:
-            order_total += order_items.item.price * order_items.quantity
-        return order_total
