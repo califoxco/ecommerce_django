@@ -92,7 +92,6 @@
           {% endif %}
         </div>
 
-
         <div class="mb-3">
           <label for="phone"> Phone Number </label>
           {% comment %}
@@ -148,15 +147,56 @@
             {% endif %}
           </div>
         </div>
-        <hr class="mb-4">
+
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="same-address">
+          <input type="checkbox" class="custom-control-input" id="same-address" checked>
           <label class="custom-control-label" for="same-address">Billing address is the same as my shipping address</label>
         </div>
+
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="save-info">
           <label class="custom-control-label" for="save-info">Save this information for next time</label>
         </div>
+        <hr class="mb-4 billing">
+
+        <h1 class="mb-3 billing">Billing address</h1>
+
+        <div class="row billing">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">First name</label>
+            {{ form.billing_first_name }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Last name</label>
+             {{ form.billing_last_name }}
+          </div>
+        </div>
+
+        <div class="mb-3 billing">
+          <label for="address">Address</label>
+          {{ form.billing_address_1 }}
+        </div>
+
+        <div class="mb-3 billing">
+          <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+          {{ form.billing_address_2 }}
+        </div>
+
+        <div class="row billing">
+          <div class="col-md-5 mb-3">
+            <label for="country">Country</label>
+            {{ form.billing_country }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="state">State</label>
+            {{ form.billing_state }}
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="zip">Zip</label>
+            {{ form.billing_zip }}
+          </div>
+        </div>
+
         <hr class="mb-4">
 
         <h4 class="mb-3">Payment</h4>

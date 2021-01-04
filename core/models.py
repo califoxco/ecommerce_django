@@ -45,6 +45,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    order_total = models.FloatField(default=0)
 
     # Shipping Address
     first_name = models.CharField(max_length=100)
@@ -56,7 +57,15 @@ class Order(models.Model):
     country = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     zip = models.CharField(max_length=100)
-    order_total = models.FloatField(default=0)
+
+    # Billing Address
+    billing_first_name = models.CharField(max_length=100, )
+    billing_last_name = models.CharField(max_length=100)
+    billing_address_1 = models.CharField(max_length=200)
+    billing_address_2 = models.CharField(max_length=200)
+    billing_country = models.CharField(max_length=100)
+    billing_state = models.CharField(max_length=100)
+    billing_zip = models.CharField(max_length=100)
 
     def __str__(self):
         return self.user.username
