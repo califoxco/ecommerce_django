@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="065be1f2-9f88-4baa-b898-f752c2b09890" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/core/migrations/0010_auto_20210104_1257.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static_in_env/js/form-validation.js" beforeDir="false" afterPath="$PROJECT_DIR$/static_in_env/js/form-validation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/core/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/core/checkout.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/js.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/js.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

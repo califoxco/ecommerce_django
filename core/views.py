@@ -97,6 +97,14 @@ class CheckoutView(LoginRequiredMixin, View):
                 state = form.cleaned_data.get('state')
                 zip = form.cleaned_data.get('zip')
 
+                billing_first_name = form.cleaned_data.get('billing_first_name')
+                billing_last_name = form.cleaned_data.get('billing_last_name')
+                billing_address_1 = form.cleaned_data.get('billing_address_1')
+                billing_address_2 = form.cleaned_data.get('billing_address_2')
+                billing_country = form.cleaned_data.get('billing_country')
+                billing_state = form.cleaned_data.get('billing_state')
+                billing_zip = form.cleaned_data.get('billing_zip')
+
                 sale_order = Order.objects.filter(user=self.request.user, ordered=False)
                 sale_order.update(
                     first_name=first_name,
@@ -110,6 +118,13 @@ class CheckoutView(LoginRequiredMixin, View):
                     zip=zip,
                     order_total=order_total,
 
+                    billing_first_name=billing_first_name,
+                    billing_last_name=billing_last_name,
+                    billing_address_1=billing_address_1,
+                    billing_address_2=billing_address_2,
+                    billing_country=billing_country,
+                    billing_state=billing_state,
+                    billing_zip=billing_zip,
                 )
                 return redirect('core:checkout')
 
