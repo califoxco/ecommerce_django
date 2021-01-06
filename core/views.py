@@ -135,6 +135,22 @@ class CheckoutView(LoginRequiredMixin, View):
             return render(self.request, 'core/order_summary.html')
 
 
+class PaymentView(LoginRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        sale_order = Order.objects.filter(user=self.request.user, ordered=False)
+        if sale_order:
+            order_total = sale_order[0].order_total
+            order = sale_order[0].items.all()
+            print(f'this order consists of {order}')
+            context = {
+                'object': order,
+                'order_total': order_total,
+            }
+            return render(self.request, 'core/payment.html', context)
+        else:
+            return redirect('home')
+
 @allow_lazy_user
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
