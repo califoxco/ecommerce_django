@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'core',
     'users',
+    'stripe',
 ]
 
 MIDDLEWARE = [
@@ -91,8 +92,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Lazy signup setting
 
 AUTHENTICATION_BACKENDS = (
-  'django.contrib.auth.backends.ModelBackend',
-  'lazysignup.backends.LazySignupBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'lazysignup.backends.LazySignupBackend',
 )
 
 # Internationalization
@@ -129,3 +130,7 @@ LOGOUT_REDIRECT_URL = 'core:home'
 
 # setting login path
 LOGIN_URL = 'login'
+
+# setting stripe keys
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51I6lFEEAWZdm0jh6xkDdLUWJ1AjW2cIOPng6ukZ18SF2bnbQBtcHRG82nYkRto7cY28kOLdSKpdc2mfKPWUf10TK00VyAAYWxM'
+STRIPE_SECRET_KEY = 'sk_test_51I6lFEEAWZdm0jh618pHFXMl2bl54MPk5f94gJvcCSozjhJZ67VvWAj0KoASHuE7fDczWTaWgw7SjloHLat1suOJ00SlBeAe1V'

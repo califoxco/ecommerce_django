@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% load cart_template_tags %}
 
 {% if messages %}
@@ -49,6 +50,11 @@
 
     <div class="col-md-8 order-md-1">
         <h1 class="mb-3">Payment</h1>
+        <section class="section">
+            <div class="container">
+                <button class="button is-primary" id="submitBtn">Purchase!</button>
+            </div>
+        </section>
     </div>
   </div>
 
@@ -56,5 +62,6 @@
     <p class="mb-1">&copy; 2019-2020 JS Jewelry</p>
   </footer>
 </div>
-
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/stripe-form.js' %}"></script>
 {% endblock content %}
