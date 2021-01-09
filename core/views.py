@@ -1,6 +1,6 @@
 import stripe
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, TemplateView
 from .models import Item, OrderItem, Order
 from django.utils import timezone
 from django.contrib import messages
@@ -155,14 +155,32 @@ class PaymentView(LoginRequiredMixin, View):
         else:
             return redirect('home')
 
+
 @csrf_exempt
 def stripe_config(request):
     if request.method == 'GET':
         stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
         return JsonResponse(stripe_config, safe=False)
 
+
 @csrf_exempt
 def create_checkout_session(request):
+    sale_order = Order.objects.filter(user=request.user, ordered=False)
+    order_items = []
+    # redirects if order does not exist
+    if not sale_order:
+        return redirect('home')
+
+    # composes a list of ordering items
+    else:
+        for order_item in sale_order[0].items.all():
+            order_items.append({
+                        'name': order_item.item.title,
+                        'quantity': order_item.quantity,
+                        'currency': 'usd',
+                        'amount': int(order_item.item.price*100),
+                    })
+            print(order_items)
     if request.method == 'GET':
         domain_url = 'http://localhost:8000/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -181,18 +199,20 @@ def create_checkout_session(request):
                 cancel_url=domain_url + 'cancelled/',
                 payment_method_types=['card'],
                 mode='payment',
-                line_items=[
-                    {
-                        'name': 'T-shirt',
-                        'quantity': 1,
-                        'currency': 'usd',
-                        'amount': '2000',
-                    }
-                ]
+                line_items=order_items
             )
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
             return JsonResponse({'error': str(e)})
+
+
+class SuccessView(TemplateView):
+    template_name = 'success.html'
+
+
+class CancelledView(TemplateView):
+    template_name = 'cancelled.html'
+
 
 @allow_lazy_user
 def add_to_cart(request, slug):
