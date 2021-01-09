@@ -12,9 +12,9 @@ urlpatterns = [
     path('order-summary/', views.OrderSummaryView.as_view(), name='order-summary'),
     path('checkout', views.CheckoutView.as_view(), name='checkout'),
     path('payment', views.PaymentView.as_view(), name='payment'),
-    path('config/', views.stripe_config),
-    path('create-checkout-session/', views.create_checkout_session),
+    path('config/', views.stripe_config),  # Stripe config
+    path('create-checkout-session/', views.create_checkout_session),  # Stripe session
     path('success/', views.SuccessView.as_view()),  # new
     path('cancelled/', views.CancelledView.as_view()),  # new
-    # path('accept-checkout', views.accept_checkout, name='accept-checkout'),
+    path('webhook/', views.stripe_webhook),  # new
 ]

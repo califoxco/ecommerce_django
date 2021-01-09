@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CheckoutForm
 from django.conf import settings
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from lazysignup.decorators import allow_lazy_user
@@ -15,16 +15,6 @@ from lazysignup.decorators import allow_lazy_user
 """
     The code below is already implemented automatically by django
 """
-
-
-# def item_detail(request):
-#     context = {
-#         'items': Item.objects.all()
-#     }
-#     return render(request, 'item_detail.html', context)
-
-def checkout(request):
-    return render(request, 'checkout.html', {})
 
 
 class HomeView(ListView):
@@ -47,7 +37,6 @@ class OrderSummaryView(LoginRequiredMixin, View):
             context = {
                 'object': order
             }
-            print(order.first().quantity)
             return render(self.request, 'core/order_summary.html', context)
         else:
             messages.error(self.request, "You do have an active order")
@@ -88,9 +77,9 @@ class CheckoutView(LoginRequiredMixin, View):
                 'order_total': order_total,
                 'form': form,
             }
-            print(self.request.POST)
+
             if form.is_valid():
-                print("the form is valid")
+
                 first_name = form.cleaned_data.get('first_name')
                 last_name = form.cleaned_data.get('last_name')
                 email = form.cleaned_data.get('email')
@@ -130,7 +119,45 @@ class CheckoutView(LoginRequiredMixin, View):
                     billing_state=billing_state,
                     billing_zip=billing_zip,
                 )
-                return redirect('core:checkout')
+
+                '''
+                    Form-valid action
+                '''
+                # return redirect('core:checkout')
+
+                order_items = []
+                print(order)
+                # composes a list of ordering items
+                for order_item in order:
+                    order_items.append({
+                        'name': order_item.item.title,
+                        'quantity': order_item.quantity,
+                        'currency': 'usd',
+                        'amount': int(order_item.item.price * 100),
+                    })
+
+                domain_url = 'http://localhost:8000/'
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                try:
+                    # Create new Checkout Session for the order
+                    # For full details see https://stripe.com/docs/api/checkout/sessions/create
+                    checkout_session = stripe.checkout.Session.create(
+                        success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                        cancel_url=domain_url + 'cancelled/',
+                        payment_method_types=['card'],
+                        mode='payment',
+                        line_items=order_items
+                    )
+                    return HttpResponse("<script src='https://js.stripe.com/v3/'></script><script>const stripe = "
+                                        "Stripe('"+settings.STRIPE_PUBLISHABLE_KEY+"');stripe"
+                                        ".redirectToCheckout({sessionId: '" +
+                                        checkout_session['id'] +
+                                        "'})</script>")
+                    # return JsonResponse({'sessionId': checkout_session['id']})
+
+
+                except Exception as e:
+                    return JsonResponse({'error': str(e)})
 
             return render(self.request, 'core/checkout.html', context)
 
@@ -146,7 +173,6 @@ class PaymentView(LoginRequiredMixin, View):
         if sale_order:
             order_total = sale_order[0].order_total
             order = sale_order[0].items.all()
-            print(f'this order consists of {order}')
             context = {
                 'object': order,
                 'order_total': order_total,
@@ -175,12 +201,11 @@ def create_checkout_session(request):
     else:
         for order_item in sale_order[0].items.all():
             order_items.append({
-                        'name': order_item.item.title,
-                        'quantity': order_item.quantity,
-                        'currency': 'usd',
-                        'amount': int(order_item.item.price*100),
-                    })
-            print(order_items)
+                'name': order_item.item.title,
+                'quantity': order_item.quantity,
+                'currency': 'usd',
+                'amount': int(order_item.item.price * 100),
+            })
     if request.method == 'GET':
         domain_url = 'http://localhost:8000/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -206,6 +231,33 @@ def create_checkout_session(request):
             return JsonResponse({'error': str(e)})
 
 
+@csrf_exempt
+def stripe_webhook(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        print("Payment was successful!!!!!!!!!!!!!!!!!")
+        # TODO: run some custom code here
+
+    return HttpResponse(status=200)
+
+
 class SuccessView(TemplateView):
     template_name = 'success.html'
 
@@ -228,7 +280,6 @@ def add_to_cart(request, slug):
         # check if the order item is in the order
         if order.items.filter(item__slug=item.slug).exists():
             order_item.quantity += 1
-            print("it is in")
             order_item.save()
         else:
             order.items.add(order_item)
