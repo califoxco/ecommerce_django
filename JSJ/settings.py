@@ -129,3 +129,6 @@ LOGOUT_REDIRECT_URL = 'core:home'
 
 # setting login path
 LOGIN_URL = 'login'
+
+# stripe webhook #
+STRIPE_ENDPOINT_SECRET = 'whsec_rl0fZzzBIxIULpqz0C9TZbXtBiJPEpYf'

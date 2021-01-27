@@ -1,10 +1,14 @@
+import stripe
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, View
 from .models import Item, OrderItem, Order
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CheckoutForm
+from JSJ import settings
 
 from lazysignup.decorators import allow_lazy_user
 
@@ -151,6 +155,7 @@ class PaymentView(LoginRequiredMixin, View):
         else:
             return redirect('home')
 
+
 @allow_lazy_user
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -174,3 +179,30 @@ def add_to_cart(request, slug):
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
     return redirect("core:item-detail", slug=slug)
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        print("Payment was successful.")
+        # TODO: run some custom code here
+
+    return HttpResponse(status=200)
