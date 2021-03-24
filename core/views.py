@@ -1,7 +1,8 @@
 import stripe
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView, View, TemplateView
-from .models import Item, OrderItem, Order
+from .models import Item, OrderItem, Order, Payment
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -145,12 +146,13 @@ class CheckoutView(LoginRequiredMixin, View):
                         success_url=domain_url + 'checkout_success?session_id={CHECKOUT_SESSION_ID}',
                         cancel_url=domain_url + 'cancelled/',
                         payment_method_types=['card'],
+                        customer_email=email,
                         mode='payment',
                         line_items=order_items
                     )
                     return HttpResponse("<script src='https://js.stripe.com/v3/'></script><script>const stripe = "
-                                        "Stripe('"+settings.STRIPE_PUBLISHABLE_KEY+"');stripe"
-                                        ".redirectToCheckout({sessionId: '" +
+                                        "Stripe('" + settings.STRIPE_PUBLISHABLE_KEY + "');stripe"
+                                                                                       ".redirectToCheckout({sessionId: '" +
                                         checkout_session['id'] +
                                         "'})</script>")
                     # return JsonResponse({'sessionId': checkout_session['id']})
@@ -231,6 +233,7 @@ def create_checkout_session(request):
             return JsonResponse({'error': str(e)})
 
 
+@require_POST
 @csrf_exempt
 def stripe_webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -252,6 +255,8 @@ def stripe_webhook(request):
 
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        fulfill_order(session)
         print("Payment was successful!!!!!!!!!!!!!!!!!")
         # TODO: run some custom code here
 
@@ -259,7 +264,7 @@ def stripe_webhook(request):
 
 
 class SuccessView(LoginRequiredMixin, View):
-    #template_name = 'core/checkout_success.html'
+    # template_name = 'core/checkout_success.html'
 
     def get(self, *args, **kwargs):
         order = OrderItem.objects.filter(user=self.request.user, ordered=False)
@@ -299,3 +304,20 @@ def add_to_cart(request, slug):
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
     return redirect("core:item-detail", slug=slug)
+
+
+def fulfill_order(session):
+    # TODO: run some custom code here
+
+    payment = Payment.objects.create(stripe_charge_id=session.id, email=session.customer_email, amount=session.amount_total/100)
+
+    sale_order_qs = Order.objects.filter(email=session.customer_email, ordered=False, paid=False)
+    sale_order = sale_order_qs[0]
+    sale_order.paid = True
+    sale_order.ordered = True
+    sale_order.payment = payment
+    sale_order.save()
+
+    for item in sale_order.items.all():
+        item.ordered = True
+        item.save()

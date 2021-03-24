@@ -47,31 +47,42 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     order_total = models.FloatField(default=0)
 
+    payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
+    paid = models.BooleanField(default=False)
+
     # Shipping Address
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=100)
     address_1 = models.CharField(max_length=200)
-    address_2 = models.CharField(max_length=200)
+    address_2 = models.CharField(max_length=200, blank=True)
     country = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     zip = models.CharField(max_length=100)
 
     # Billing Address
-    billing_first_name = models.CharField(max_length=100, )
-    billing_last_name = models.CharField(max_length=100)
-    billing_address_1 = models.CharField(max_length=200)
-    billing_address_2 = models.CharField(max_length=200)
-    billing_country = models.CharField(max_length=100)
-    billing_state = models.CharField(max_length=100)
-    billing_zip = models.CharField(max_length=100)
+    billing_first_name = models.CharField(max_length=100, blank=True)
+    billing_last_name = models.CharField(max_length=100, blank=True)
+    billing_address_1 = models.CharField(max_length=200, blank=True)
+    billing_address_2 = models.CharField(max_length=200, blank=True)
+    billing_country = models.CharField(max_length=100, blank=True)
+    billing_state = models.CharField(max_length=100, blank=True)
+    billing_zip = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.user.username
 
 
+class Payment(models.Model):
+    stripe_charge_id = models.CharField(max_length=100)
+    email = models.EmailField(blank=True)
+    amount = models.FloatField(blank=True)
+    timestamp = models.DateTimeField(auto_now=True)
 
+
+    def __str__(self):
+        return self.email
 
 
 
