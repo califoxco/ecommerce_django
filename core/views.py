@@ -142,7 +142,7 @@ class CheckoutView(LoginRequiredMixin, View):
                     # Create new Checkout Session for the order
                     # For full details see https://stripe.com/docs/api/checkout/sessions/create
                     checkout_session = stripe.checkout.Session.create(
-                        success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                        success_url=domain_url + 'checkout_success?session_id={CHECKOUT_SESSION_ID}',
                         cancel_url=domain_url + 'cancelled/',
                         payment_method_types=['card'],
                         mode='payment',
@@ -220,7 +220,7 @@ def create_checkout_session(request):
 
             # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
             checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                success_url=domain_url + 'checkout_success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url=domain_url + 'cancelled/',
                 payment_method_types=['card'],
                 mode='payment',
@@ -258,8 +258,19 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 
-class SuccessView(TemplateView):
-    template_name = 'success.html'
+class SuccessView(LoginRequiredMixin, View):
+    #template_name = 'core/checkout_success.html'
+
+    def get(self, *args, **kwargs):
+        order = OrderItem.objects.filter(user=self.request.user, ordered=False)
+        if order:
+            context = {
+                'object': order
+            }
+            return render(self.request, 'core/checkout_success.html', context)
+        else:
+            messages.error(self.request, "You do have an active order")
+            return render(self.request, 'core/checkout_success.html')
 
 
 class CancelledView(TemplateView):

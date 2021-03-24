@@ -14,7 +14,7 @@ urlpatterns = [
     path('payment', views.PaymentView.as_view(), name='payment'),
     path('config/', views.stripe_config),  # Stripe config
     path('create-checkout-session/', views.create_checkout_session),  # Stripe session
-    path('success/', views.SuccessView.as_view()),  # new
+    path('checkout_success', views.SuccessView.as_view()),  # new
     path('cancelled/', views.CancelledView.as_view()),  # new
     path('webhook/', views.stripe_webhook),  # new
 ]
