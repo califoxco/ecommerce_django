@@ -3,6 +3,7 @@ certifi==2020.12.5
 chardet==4.0.0
 Django==3.1.1
 django-crispy-forms==1.10.0
+-e git+https://github.com/califoxco/ecommerce_django.git@2f81d5e289db3c1fdf4324c1f891c90bd95754f4#egg=django_lazysignup&subdirectory=django-lazysignup-jsj
 idna==2.10
 Pillow==8.0.1
 pytz==2020.1
