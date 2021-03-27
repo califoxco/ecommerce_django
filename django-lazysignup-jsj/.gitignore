@@ -1,0 +1,25 @@
+dist/
+build/
+
+*egg-info*
+*.pyc
+
+docs/_build
+
+*~
+
+# Vim
+*.swp
+
+# Pycharm
+.idea/
+.project
+*.iml
+
+# Virtual environments
+venv/
+env/
+
+# Coverage
+.coverage
+htmlcov/

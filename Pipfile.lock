@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "84cc945cb8aeb5a72f1518f2111514d54bda31a5afe955901a5962db1c1fe451"
+            "sha256": "d35eab0c2ae2dbb4d9db57beff167aa971a4e19cd9297614353ea4676da0ed72"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -55,14 +55,6 @@
             ],
             "index": "pypi",
             "version": "==1.10.0"
-        },
-        "django-lazysignup": {
-            "hashes": [
-                "sha256:7a10c53d7a624254baec9366c94c1787a0e72411106a3f2ac714638b39e3b67c",
-                "sha256:c68a4935b5bc57a97c4c368cae880434c7a339ed125961d56a7cdb4623502ea2"
-            ],
-            "index": "pypi",
-            "version": "==2.0.0"
         },
         "idna": {
             "hashes": [
