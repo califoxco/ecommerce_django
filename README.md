@@ -20,3 +20,5 @@ The admin user can make changes to the inventory anytime through the admin panel
 ### Form Authentication
 Django backend checks for validity in every single form (sign up form, shipping address form, billing ...)
 
+# Deployment
+AWS lightsail 
